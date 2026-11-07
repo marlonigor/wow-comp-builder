@@ -7,6 +7,12 @@ export interface Coverage {
   missingBonus: string[];
 }
 
+/** Separa os críticos promovidos pelo perfil da masmorra. Exemplo: getDungeonCriticalIds(contexto, perfilGeral). */
+export function getDungeonCriticalIds(context: CoverageContext, general: DungeonProfile | undefined): readonly string[] {
+  if (context.mode !== "DUNGEON_5" || context.dungeon.id === "general") return [];
+  return context.dungeon.criticalUtilities.filter((id) => !general?.criticalUtilities.includes(id));
+}
+
 interface SpecCoverage {
   critical: UtilityDefinition[];
   bonus: UtilityDefinition[];

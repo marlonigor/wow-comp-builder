@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { findSpec, foreverCatalog } from "../src/data/foreverCatalog.ts";
+import { getDungeonCriticalIds } from "../src/compEngine.ts";
 
 test("o catálogo versionado tem IDs únicos e referências válidas", () => {
   const { patchVersion, utilities, specs, dungeons } = foreverCatalog;
@@ -66,4 +67,19 @@ test("Ruins of Lordaeron prioriza remoção de veneno sem duplicar o bônus", ()
   const profile = foreverCatalog.dungeons.find(({ id }) => id === "ruins-of-lordaeron");
   assert.ok(profile.criticalUtilities.includes("poison_dispel"));
   assert.ok(!profile.bonusUtilities.includes("poison_dispel"));
+});
+
+test("o painel separa críticos próprios sem repetir os requisitos gerais", () => {
+  const profiles = new Map(foreverCatalog.dungeons.map((dungeon) => [dungeon.id, dungeon]));
+  const general = profiles.get("general");
+  const cases = [
+    ["wailing-caverns", ["poison_dispel"]],
+    ["shadowfang-keep", ["curse_dispel"]],
+    ["blackmaw-hold", []],
+    ["general", []],
+  ];
+  for (const [id, expected] of cases) {
+    assert.deepEqual(getDungeonCriticalIds({ mode: "DUNGEON_5", dungeon: profiles.get(id) }, general), expected);
+  }
+  assert.deepEqual(getDungeonCriticalIds({ mode: "RAID_20" }, general), []);
 });

@@ -16,6 +16,7 @@ Rode `sh bin/check` no Git Bash ou `npm run check` no PowerShell. A validação 
 - Passe o mouse ou use `Tab` sobre uma especialização para destacar a vaga de destino. Clique em **Vaga livre** para abrir um seletor filtrado pela função e preencher exatamente aquela posição.
 - O seletor da vaga mostra os críticos e bônus que a especialização acrescentaria à composição. Utilitários já cobertos ficam de fora. `Escape` fecha o seletor.
 - Em Cobertura tática, os utilitários que o grupo já oferece aparecem em verde com o rótulo **Coberto**.
+- Ao selecionar uma masmorra, o bloco **Específicos da masmorra** reúne seus alertas próprios e mantém os estados de cobertura e o Smart Fill. A cobertura geral fica separada. Se o catálogo ainda não tiver alertas próprios, o bloco informa que usa o perfil geral.
 - O estado fica na URL e no armazenamento local. IDs do protótipo fictício precisam de um novo link. O botão de copiar link está pendente e as proporções de funções nas Raids são provisórias.
 
 ## Catálogo Forever 1.60.1.70862

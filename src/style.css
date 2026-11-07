@@ -236,6 +236,22 @@ button:hover {
   background: #173b2b;
   color: #c6f6d5;
 }
+.coverage-panel h3 {
+  color: #ffe2a6;
+  font-weight: 700;
+  margin-block: 0.875rem 0.5rem;
+}
+.dungeon-coverage {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #aa8951;
+  border-left: 4px solid #e3b974;
+  border-radius: 0.5rem;
+  background: #0a1425;
+}
+.dungeon-coverage h3 {
+  margin-top: 0.25rem;
+}
 .roster li,
 .spec {
   display: flex;

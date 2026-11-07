@@ -12,6 +12,7 @@ import { searchSpecs } from "./commandSearch.ts";
 import { SpecSlotChoice } from "./SpecSlotChoice.tsx";
 import type { SlotChoices } from "./SpecSlotChoice.tsx";
 import { Roster } from "./Roster.tsx";
+import { CoveragePanel } from "./CoveragePanel.tsx";
 import "./style.css";
 
 function Readiness({ composition }: { composition: CompositionLink }): React.JSX.Element {
@@ -186,61 +187,21 @@ function Palette(props: PaletteProps): React.JSX.Element {
   );
 }
 
-interface CoveragePanelProps {
-  coverage: Coverage;
-  group: readonly SpecDefinition[];
-  selected: readonly string[];
-  toggle: BoardActions["toggle"];
-}
-
-function CoveragePanel(props: CoveragePanelProps): React.JSX.Element {
-  return (
-    <section className="panel">
-      <h2>Cobertura tática</h2>
-      <p>Selecione um alerta para priorizar quem pode cobri-lo.</p>
-      <div className="options">
-        {foreverCatalog.utilities.map(({ id, name }) => (
-          <CoverageEntry key={id} id={id} name={name} {...props} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CoverageEntry({
-  id,
-  name,
-  coverage,
-  group,
-  selected,
-  toggle,
-}: CoveragePanelProps & { id: string; name: string }): React.JSX.Element | null {
-  if (coverage.missingCritical.includes(id)) {
-    return (
-      <button className="alert" aria-pressed={selected.includes(id)} onClick={() => toggle(id)}>
-        Falta crítica · {name}
-      </button>
-    );
-  }
-  if (coverage.missingBonus.includes(id)) return <p>Bônus disponível · {name}</p>;
-  return group.some(({ utilities }) => utilities.includes(id)) ? <p className="coverage-covered">Coberto · {name}</p> : null;
-}
-
 function Board(props: BoardProps): React.JSX.Element {
   const { composition } = props;
   const state = useBoardState();
   const { add, remove, toggle } = boardActions(props, state);
   const group = composition.slots.flatMap(({ specId }) => findSpec(specId ?? "") ?? []);
-  const coverage = getCoverage(foreverCatalog.utilities, group, coverageContext(composition));
-  const choices = { slots: composition.slots, onPreview: state.setPreviewIndex };
+  const context = coverageContext(composition);
+  const coverage = getCoverage(foreverCatalog.utilities, group, context);
   return (
     <>
       <BoardStatus status={state.status} />
       <div className="board">
         <Roster slots={composition.slots} previewIndex={state.previewIndex} coverage={coverage} onRemove={remove} onAssign={add} />
         <div className="side">
-          <Palette state={state} choices={choices} coverage={coverage} add={add} />
-          <CoveragePanel coverage={coverage} group={group} selected={state.selected} toggle={toggle} />
+          <Palette state={state} choices={{ slots: composition.slots, onPreview: state.setPreviewIndex }} coverage={coverage} add={add} />
+          <CoveragePanel context={context} coverage={coverage} group={group} selected={state.selected} toggle={toggle} />
         </div>
       </div>
     </>
