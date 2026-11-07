@@ -1,0 +1,35 @@
+name: Validate
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out public repository
+        env:
+          SOURCE_REPOSITORY: ${{ github.repository }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: |
+          git init
+          git fetch --depth=1 "https://github.com/$SOURCE_REPOSITORY.git" "$SOURCE_REVISION"
+          git switch --detach FETCH_HEAD
+      - name: Set up Node.js
+        run: |
+          cd "$RUNNER_TEMP"
+          release=https://nodejs.org/dist/v26.13.0
+          archive=node-v26.13.0-linux-x64.tar.xz
+          curl --fail --silent --show-error --max-time 60 -O "$release/$archive"
+          curl --fail --silent --show-error --max-time 15 -O "$release/SHASUMS256.txt"
+          awk -v archive="$archive" '$2 == archive { print }' SHASUMS256.txt | sha256sum --check -
+          tar -xf "$archive"
+          echo "$RUNNER_TEMP/node-v26.13.0-linux-x64/bin" >> "$GITHUB_PATH"
+      - name: Validate project
+        run: |
+          sh bin/setup
+          sh bin/check
+          npm audit --audit-level=high --fetch-timeout=20000
