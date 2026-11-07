@@ -7,6 +7,16 @@ export interface Coverage {
   missingBonus: string[];
 }
 
+export interface CoverageMember {
+  slotNumber: number;
+  spec: SpecDefinition;
+}
+
+/** Lista os integrantes que fornecem um utilitário. Exemplo: getUtilityProviders(grupo, "poison_dispel"). */
+export function getUtilityProviders(group: readonly CoverageMember[], utilityId: string): readonly CoverageMember[] {
+  return group.filter(({ spec }) => spec.utilities.includes(utilityId));
+}
+
 /** Separa os críticos promovidos pelo perfil da masmorra. Exemplo: getDungeonCriticalIds(contexto, perfilGeral). */
 export function getDungeonCriticalIds(context: CoverageContext, general: DungeonProfile | undefined): readonly string[] {
   if (context.mode !== "DUNGEON_5" || context.dungeon.id === "general") return [];

@@ -17,7 +17,7 @@ O Playwright 1.65.0 verifica a cobertura tática em Chromium sem abrir uma janel
 - Pressione `/`, digite `rdruid` e pressione `Enter` para adicionar Restoration Druid à primeira vaga de curador. A busca aceita classe, especialização, atalho ou utilitário. Havendo vários resultados, escolha um card ou refine o termo.
 - Passe o mouse ou use `Tab` sobre uma especialização para destacar a vaga de destino. Clique em **Vaga livre** para abrir um seletor filtrado pela função e preencher exatamente aquela posição.
 - O seletor da vaga mostra os críticos e bônus que a especialização acrescentaria à composição. Utilitários já cobertos ficam de fora. `Escape` fecha o seletor.
-- Em Cobertura tática, os utilitários que o grupo já oferece aparecem em verde com o rótulo **Coberto**.
+- Em Cobertura tática, os utilitários que o grupo já oferece aparecem em verde com o rótulo **Coberto** e mostram as vagas e especializações que os fornecem. A lista acompanha as mudanças na composição.
 - Ao selecionar uma masmorra, o bloco **Específicos da masmorra** reúne seus alertas próprios e mantém os estados de cobertura e o Smart Fill. A cobertura geral fica separada. Se o catálogo ainda não tiver alertas próprios, o bloco informa que usa o perfil geral.
 - O estado fica na URL e no armazenamento local. IDs do protótipo fictício precisam de um novo link. O botão de copiar link está pendente e as proporções de funções nas Raids são provisórias.
 

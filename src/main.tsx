@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { getCoverage, rankSpecs } from "./compEngine.ts";
-import type { Coverage, CoverageContext } from "./compEngine.ts";
+import type { Coverage, CoverageContext, CoverageMember } from "./compEngine.ts";
 import { assignFirstSlot, assignSlotAt, slotRoleLabel } from "./compositionSlots.ts";
 import { findSpec, foreverCatalog } from "./data/foreverCatalog.ts";
 import type { SpecDefinition } from "./data/forever-data.schema.ts";
@@ -187,13 +187,25 @@ function Palette(props: PaletteProps): React.JSX.Element {
   );
 }
 
+function occupiedMembers(composition: CompositionLink): CoverageMember[] {
+  return composition.slots.flatMap(({ specId }, index) => {
+    const spec = findSpec(specId ?? "");
+    return spec ? [{ slotNumber: index + 1, spec }] : [];
+  });
+}
+
+function boardCoverage(group: readonly CoverageMember[], context: CoverageContext): Coverage {
+  const groupSpecs = group.map(({ spec }) => spec);
+  return getCoverage(foreverCatalog.utilities, groupSpecs, context);
+}
+
 function Board(props: BoardProps): React.JSX.Element {
   const { composition } = props;
   const state = useBoardState();
   const { add, remove, toggle } = boardActions(props, state);
-  const group = composition.slots.flatMap(({ specId }) => findSpec(specId ?? "") ?? []);
+  const group = occupiedMembers(composition);
   const context = coverageContext(composition);
-  const coverage = getCoverage(foreverCatalog.utilities, group, context);
+  const coverage = boardCoverage(group, context);
   return (
     <>
       <BoardStatus status={state.status} />

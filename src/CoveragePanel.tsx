@@ -1,13 +1,13 @@
 import { useId } from "react";
-import { getDungeonCriticalIds } from "./compEngine.ts";
-import type { Coverage, CoverageContext } from "./compEngine.ts";
+import { getDungeonCriticalIds, getUtilityProviders } from "./compEngine.ts";
+import type { Coverage, CoverageContext, CoverageMember } from "./compEngine.ts";
 import { foreverCatalog } from "./data/foreverCatalog.ts";
-import type { SpecDefinition, UtilityDefinition } from "./data/forever-data.schema.ts";
+import type { UtilityDefinition } from "./data/forever-data.schema.ts";
 
 interface CoveragePanelProps {
   context: CoverageContext;
   coverage: Coverage;
-  group: readonly SpecDefinition[];
+  group: readonly CoverageMember[];
   selected: readonly string[];
   toggle: (id: string) => void;
 }
@@ -28,7 +28,24 @@ function CoverageEntry({
     );
   }
   if (coverage.missingBonus.includes(id)) return <p>Bônus disponível · {name}</p>;
-  return group.some(({ utilities }) => utilities.includes(id)) ? <p className="coverage-covered">Coberto · {name}</p> : null;
+  const providers = getUtilityProviders(group, id);
+  return providers.length > 0 ? <CoveredUtility name={name} providers={providers} /> : null;
+}
+
+function CoveredUtility({ name, providers }: { name: string; providers: readonly CoverageMember[] }): React.JSX.Element {
+  const titleId = useId();
+  return (
+    <div className="coverage-covered" role="group" aria-labelledby={titleId}>
+      <span id={titleId}>Coberto · {name}</span>
+      <ul className="coverage-providers" aria-label="Fornecido por">
+        {providers.map(({ slotNumber, spec }) => (
+          <li key={slotNumber}>
+            Vaga {slotNumber} · {spec.specName} {spec.className}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 interface CoverageRowsProps {

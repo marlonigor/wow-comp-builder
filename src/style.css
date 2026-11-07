@@ -236,6 +236,18 @@ button:hover {
   background: #173b2b;
   color: #c6f6d5;
 }
+.coverage-providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+}
+.coverage-providers li {
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.3rem;
+  background: #0d2d20;
+}
 .coverage-panel h3 {
   color: #ffe2a6;
   font-weight: 700;

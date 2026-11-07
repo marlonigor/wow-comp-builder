@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { getCoverage, getSpecCoverage, rankSpecs } from "../src/compEngine.ts";
+import { getCoverage, getSpecCoverage, getUtilityProviders, rankSpecs } from "../src/compEngine.ts";
 
 const utilities = [
   { id: "bloodlust", category: "CORE" },
@@ -17,6 +17,20 @@ const dungeon = {
     bonusUtilities: ["intellect"],
   },
 };
+
+test("lista os fornecedores em ordem de vaga, inclusive specs repetidas", () => {
+  const healer = { utilities: ["poison_dispel"] };
+  const group = [
+    { slotNumber: 2, spec: healer },
+    { slotNumber: 3, spec: { utilities: ["bloodlust"] } },
+    { slotNumber: 4, spec: healer },
+  ];
+  assert.deepEqual(
+    getUtilityProviders(group, "poison_dispel").map(({ slotNumber }) => slotNumber),
+    [2, 4],
+  );
+  assert.deepEqual(getUtilityProviders(group, "intellect"), []);
+});
 
 test("detalha os críticos e bônus que a spec ainda pode acrescentar", () => {
   const group = [{ utilities: ["soothe"] }];
