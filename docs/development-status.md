@@ -20,7 +20,7 @@ Rode `sh bin/check` no Git Bash ou `npm run check` no PowerShell. A validação 
 
 ## Catálogo Forever 1.60.1.70862
 
-O [JSON versionado](../src/data/forever-data.json) reúne as nove classes, 27 especializações, 28 utilitários e 35 entradas de masmorra mais o perfil geral. As associações registram o que o planejador consegue avaliar com as fontes abaixo. O JSON usa um registro por linha para facilitar a revisão de mudanças no catálogo.
+O [JSON versionado](../src/data/forever-data.json) reúne as nove classes, 27 especializações, 32 utilitários e 35 entradas de masmorra mais o perfil geral. As associações registram o que o planejador consegue avaliar com as fontes abaixo. O JSON usa um registro por linha para facilitar a revisão de mudanças no catálogo.
 
 | Dados                                                   | Referência                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -30,6 +30,21 @@ O [JSON versionado](../src/data/forever-data.json) reúne as nove classes, 27 es
 | Totens ofensivos, Blessing of Kings e Divine Spirit     | [Blizzard — Mage e Shaman](https://worldofwarcraft.blizzard.com/en-gb/news/24302097), [Blizzard — mudanças de classe](https://worldofwarcraft.blizzard.com/en-us/news/24303313)                                                                                                               |
 | Lista de masmorras e interrupção em Wailing Caverns     | [Icy Veins — masmorras](https://www.icy-veins.com/wow-forever/dungeons-overview), [Icy Veins — Wailing Caverns](https://www.icy-veins.com/wow-forever/wailing-caverns-guide/), [Method — veneno em Wailing Caverns](https://www.method.gg/wow-forever/dungeons/wailing-caverns)               |
 
-A remoção de veneno em Wailing Caverns e a remoção de maldição em Shadowfang Keep são alertas específicos do planejador. Em Shadowfang Keep, Veil of Shadow reduz a cura recebida. As outras entradas usam o perfil geral enquanto as mecânicas são confirmadas por encontro. [Icy Veins — Shadowfang Keep](https://www.icy-veins.com/wow-forever/shadowfang-keep-guide)
+### Talentos nas builds de referência
+
+- **Marksmanship Hunter** traz Trueshot Aura, que aumenta o poder de ataque à distância de aliados próximos. [Icy Veins — build PvE](https://www.icy-veins.com/wow-forever/marksmanship-hunter-ranged-dps-pve-spec-builds-talents)
+- **Discipline Priest** traz Power Infusion na build padrão de Raid. A alternativa que aprofunda Shadow troca esse investimento. [Wowhead — builds de Discipline](https://www.wowhead.com/forever/guide/classes/priest/discipline/talent-builds-pve-healer)
+- **Shadow Priest** traz Dark Inspiration para conceder espírito ao grupo. [Wowhead — builds de Shadow](https://www.wowhead.com/forever/guide/classes/priest/shadow/talent-builds-pve-dps)
+- **Restoration Shaman** traz Mana Tide Totem para restaurar mana aos aliados próximos. [Icy Veins — build PvE](https://www.icy-veins.com/wow-forever/restoration-shaman-healer-pve-spec-builds-talents)
+
+Essas associações pressupõem as builds de referência. O painel conta os quatro utilitários como bônus em Dungeons e aplica a regra geral de cobertura de Raid.
+
+### Alertas específicos de masmorra
+
+- **Wailing Caverns** prioriza remoção de veneno devido aos efeitos de veneno ao longo da masmorra. [Method — Wailing Caverns](https://www.method.gg/wow-forever/dungeons/wailing-caverns)
+- **Shadowfang Keep** prioriza remoção de maldição porque Veil of Shadow reduz a cura recebida. [Icy Veins — Shadowfang Keep](https://www.icy-veins.com/wow-forever/shadowfang-keep-guide)
+- **Ruins of Lordaeron** prioriza remoção de veneno devido ao Leech Poison aplicado ao tanque por Witherfang e Viktor the Vile. [Method — Ruins of Lordaeron](https://www.method.gg/wow-forever/dungeons/ruins-of-lordaeron)
+
+As demais entradas usam o perfil geral enquanto suas mecânicas são confirmadas por encontro.
 
 O limite de 15 segundos para interrupção curta é uma escolha do planejador. Windfury e Flametongue compartilham uma categoria, pois são alternativas. Spell Lock e Devour Magic dependem do Felhunter. Feral é oferecido como DPS enquanto o modelo aceitar uma função por especialização. A revisão de talentos por build e dos requisitos de cada encontro ainda está em andamento. Bloodlust/Heroism não entrou nesta versão por falta de confirmação no grimório consultado.

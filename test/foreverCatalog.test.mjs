@@ -48,3 +48,22 @@ test("o catálogo distingue os alertas específicos do perfil geral", () => {
   assert.ok(profiles.get("shadowfang-keep").criticalUtilities.includes("curse_dispel"));
   assert.ok(profiles.get("general").bonusUtilities.includes("curse_dispel"));
 });
+
+test("os talentos de suporte são associados às builds recomendadas", () => {
+  const cases = [
+    ["hunter-marksmanship", "trueshot_aura", "hunter-beast-mastery"],
+    ["priest-discipline", "power_infusion", "priest-holy"],
+    ["priest-shadow", "dark_inspiration", "priest-discipline"],
+    ["shaman-restoration", "mana_tide", "shaman-elemental"],
+  ];
+  for (const [spec, utility, otherSpec] of cases) {
+    assert.ok(findSpec(spec).utilities.includes(utility), spec);
+    assert.ok(!findSpec(otherSpec).utilities.includes(utility), otherSpec);
+  }
+});
+
+test("Ruins of Lordaeron prioriza remoção de veneno sem duplicar o bônus", () => {
+  const profile = foreverCatalog.dungeons.find(({ id }) => id === "ruins-of-lordaeron");
+  assert.ok(profile.criticalUtilities.includes("poison_dispel"));
+  assert.ok(!profile.bonusUtilities.includes("poison_dispel"));
+});
