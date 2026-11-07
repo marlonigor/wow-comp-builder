@@ -10,6 +10,8 @@ Rode `sh bin/check` no Git Bash ou `npm run check` no PowerShell. A validação 
 
 ## Interface e persistência
 
+O Playwright 1.65.0 verifica a cobertura tática em Chromium sem abrir uma janela. `npm test` roda os testes unitários e de navegador. Se você instalou as dependências só com `npm ci`, rode `npm run setup:browser` uma vez para instalar o Chromium de teste. `sh bin/setup` já faz isso. O teste usa um servidor isolado na porta 4175.
+
 - O HTML de referência orientou a mesa tática azul e dourada, a grade de vagas e o painel de cobertura. A montagem continua manual.
 - Clique na busca para escolher uma classe pelo ícone e depois uma das três especializações. Os cards têm ícones de especialização, e as vagas preenchidas mostram os ícones de classe e especialização. Os JPEGs vêm do [CDN de ícones do Wowhead](https://wow.zamimg.com/images/wow/icons/large/classicon_druid.jpg) e são servidos junto com a aplicação.
 - Pressione `/`, digite `rdruid` e pressione `Enter` para adicionar Restoration Druid à primeira vaga de curador. A busca aceita classe, especialização, atalho ou utilitário. Havendo vários resultados, escolha um card ou refine o termo.

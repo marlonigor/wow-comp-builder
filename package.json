@@ -9,13 +9,17 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "build": "tsc --noEmit && vite build",
-    "test": "node --test --experimental-test-coverage"
+    "test": "npm run test:unit && npm run test:browser",
+    "test:unit": "node --test --experimental-test-coverage test/*.test.mjs",
+    "test:browser": "node bin/playwright.mjs test",
+    "setup:browser": "node bin/playwright.mjs install --only-shell chromium"
   },
   "dependencies": {
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.0",
     "@tailwindcss/vite": "4.3.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",

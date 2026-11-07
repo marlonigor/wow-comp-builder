@@ -3,3 +3,4 @@ set -eu
 
 cd "$(dirname "$0")/.."
 npm ci --fetch-timeout=20000
+npm run setup:browser

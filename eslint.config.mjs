@@ -1,10 +1,10 @@
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist/**"] },
+  { ignores: ["dist/**", "test-results/**", "playwright-report/**"] },
   ...tseslint.configs.recommended,
   {
-    files: ["src/**/*.{ts,tsx}", "test/**/*.mjs", "*.mjs"],
+    files: ["src/**/*.{ts,tsx}", "test/**/*.mjs", "e2e/**/*.mjs", "bin/*.mjs", "*.mjs"],
     rules: {
       complexity: ["error", 10],
       "max-depth": ["error", 2],
