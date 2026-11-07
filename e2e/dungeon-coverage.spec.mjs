@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import "./ui-coverage.mjs";
 
 test("o utilitário da masmorra aparece separado e muda para coberto", async ({ page }) => {
   await page.goto("/?m=5&dg=ruins-of-lordaeron&c=");
@@ -9,7 +10,7 @@ test("o utilitário da masmorra aparece separado e muda para coberto", async ({ 
 
   await poisonAlert.click();
   await expect(poisonAlert).toHaveAttribute("aria-pressed", "true");
-  const druid = page.getByRole("button", { name: /Restoration Druid.*selecionados/ });
+  const druid = page.getByRole("button", { name: /Restoration Druid.*prioridades atendidas/ });
   await expect(druid).toBeVisible();
   await druid.click();
 
@@ -37,7 +38,7 @@ test("a cobertura identifica vagas repetidas e atualiza os fornecedores ao remov
 test("a masmorra sem regras próprias informa que usa o perfil geral", async ({ page }) => {
   await page.goto("/?m=5&dg=razorfen-kraul&c=");
   const dungeon = page.getByRole("region", { name: "Razorfen Kraul" });
-  await expect(dungeon.getByText("O catálogo ainda usa o perfil geral para esta masmorra.")).toBeVisible();
-  await expect(dungeon.getByRole("button")).toHaveCount(0);
+  await expect(dungeon).toHaveCount(0);
+  await expect(page.getByText("Esta masmorra usa o perfil geral; requisitos próprios ainda não foram verificados.")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cobertura geral" })).toBeVisible();
 });

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { getCoverage, rankSpecs } from "./compEngine.ts";
 import type { Coverage, CoverageContext, CoverageMember } from "./compEngine.ts";
-import { assignFirstSlot, assignSlotAt, slotRoleLabel } from "./compositionSlots.ts";
+import { assignFirstSlot, assignSlotAt, findFirstSlot, slotRoleLabel } from "./compositionSlots.ts";
 import { findSpec, foreverCatalog } from "./data/foreverCatalog.ts";
 import type { SpecDefinition } from "./data/forever-data.schema.ts";
 import { emptyComposition, groupSizes, loadComposition, saveComposition } from "./browserComposition.ts";
@@ -15,20 +15,7 @@ import { Roster } from "./Roster.tsx";
 import { CoveragePanel } from "./CoveragePanel.tsx";
 import "./style.css";
 
-function Readiness({ composition }: { composition: CompositionLink }): React.JSX.Element {
-  const filled = composition.slots.filter(({ specId }) => specId).length;
-  return (
-    <div className="readiness">
-      <span>Vagas preenchidas</span>
-      <strong>
-        {filled}/{composition.size}
-      </strong>
-      <progress aria-label="Vagas preenchidas" value={filled} max={composition.size} />
-    </div>
-  );
-}
-
-function MissionHeader({ composition }: { composition: CompositionLink }): React.JSX.Element {
+function MissionHeader(): React.JSX.Element {
   return (
     <header className="mission">
       <div className="crest" aria-hidden="true">
@@ -39,7 +26,6 @@ function MissionHeader({ composition }: { composition: CompositionLink }): React
         <h1>Comp Builder</h1>
         <p>Monte o grupo e acompanhe os utilitários que faltam.</p>
       </div>
-      <Readiness composition={composition} />
     </header>
   );
 }
@@ -123,21 +109,27 @@ interface SpecResultsProps {
   add: BoardActions["add"];
 }
 
-function SpecResults({ ranked, choices, add }: SpecResultsProps): React.JSX.Element {
-  if (ranked.length === 0) return <p>Nenhuma especialização encontrada.</p>;
+function SpecResultCards({ ranked, choices, add }: SpecResultsProps): React.JSX.Element {
+  if (ranked.length === 0) return <p>Nenhuma especialização disponível para esta busca e as vagas livres.</p>;
   return (
     <div className="options">
       {ranked.slice(0, 6).map(({ spec, score, matchCount }) => (
         <SpecSlotChoice key={spec.id} spec={spec} choices={choices} onSelect={add}>
-          {score > 0 && (
-            <small className="score" aria-label={`${score} lacunas cobertas`}>
-              +{score}
-            </small>
-          )}
-          {matchCount > 0 && <small>{matchCount} selecionados</small>}
+          {score > 0 && <small className="score">{score} críticos cobertos</small>}
+          {matchCount > 0 && <small>{matchCount} prioridades atendidas</small>}
         </SpecSlotChoice>
       ))}
     </div>
+  );
+}
+
+function SpecResults(props: SpecResultsProps & { expanded: boolean }): React.JSX.Element {
+  if (props.expanded) return <SpecResultCards {...props} />;
+  return (
+    <details className="suggestions">
+      <summary>Sugestões compatíveis ({Math.min(props.ranked.length, 6)})</summary>
+      <SpecResultCards {...props} />
+    </details>
   );
 }
 
@@ -169,20 +161,38 @@ function paletteActions({ state, add }: PaletteProps, candidates: readonly SpecD
 function Palette(props: PaletteProps): React.JSX.Element {
   const { state, choices, coverage, add } = props;
   const candidates = searchSpecs(state.query, foreverCatalog.specs, foreverCatalog.utilities);
-  const ranked = rankSpecs(candidates, coverage.missingCritical, state.selected);
+  const ranked = rankSpecs(candidates, coverage.missingCritical, state.selected).filter(
+    ({ spec }) => findFirstSlot(choices.slots, spec.role) >= 0,
+  );
+  if (choices.slots.every(({ specId }) => specId)) return <CompleteGroup />;
+  return (
+    <section className="panel palette-panel">
+      <h2>Adicionar ao grupo</h2>
+      <PaletteCommand props={props} candidates={candidates} />
+      <SpecResults ranked={ranked} choices={choices} add={add} expanded={Boolean(state.query.trim() || state.selected.length)} />
+    </section>
+  );
+}
+
+function PaletteCommand({ props, candidates }: { props: PaletteProps; candidates: readonly SpecDefinition[] }): React.JSX.Element {
   const { change, submit } = paletteActions(props, candidates);
   return (
-    <section className="panel">
-      <h2>Especializações</h2>
-      <CommandBar
-        query={state.query}
-        specs={foreverCatalog.specs}
-        onSpecSelect={add}
-        choices={choices}
-        onQueryChange={change}
-        onSubmit={submit}
-      />
-      <SpecResults ranked={ranked} choices={choices} add={add} />
+    <CommandBar
+      query={props.state.query}
+      specs={foreverCatalog.specs}
+      onSpecSelect={props.add}
+      choices={props.choices}
+      onQueryChange={change}
+      onSubmit={submit}
+    />
+  );
+}
+
+function CompleteGroup(): React.JSX.Element {
+  return (
+    <section className="panel palette-panel complete-group">
+      <h2>Grupo completo</h2>
+      <p>Confira a cobertura tática. Para mudar um integrante, remova-o da composição e escolha outro na vaga liberada.</p>
     </section>
   );
 }
@@ -210,9 +220,9 @@ function Board(props: BoardProps): React.JSX.Element {
     <>
       <BoardStatus status={state.status} />
       <div className="board">
+        <Palette state={state} choices={{ slots: composition.slots, onPreview: state.setPreviewIndex }} coverage={coverage} add={add} />
         <Roster slots={composition.slots} previewIndex={state.previewIndex} coverage={coverage} onRemove={remove} onAssign={add} />
         <div className="side">
-          <Palette state={state} choices={{ slots: composition.slots, onPreview: state.setPreviewIndex }} coverage={coverage} add={add} />
           <CoveragePanel context={context} coverage={coverage} group={group} selected={state.selected} toggle={toggle} />
         </div>
       </div>
@@ -268,7 +278,7 @@ function App(): React.JSX.Element {
   useEffect(() => saveComposition(window, composition), [composition]);
   return (
     <main>
-      <MissionHeader composition={composition} />
+      <MissionHeader />
       <p className="catalog-note">Catálogo inicial · {foreverCatalog.patchVersion}. A cobertura reflete os dados já verificados.</p>
       <div className="controls">
         <ModeSelect composition={composition} onChange={onChange} />

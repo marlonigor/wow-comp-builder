@@ -1,5 +1,4 @@
-import { useState } from "react";
-import type { KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClassPicker } from "./ClassPicker.tsx";
 import { getSpecCoverage } from "./compEngine.ts";
 import type { Coverage } from "./compEngine.ts";
@@ -26,18 +25,9 @@ function CoverageDetails({ spec, coverage, utilities }: CoverageDetailsProps): R
   const { critical, bonus } = getSpecCoverage(spec, coverage, utilities);
   if (critical.length === 0 && bonus.length === 0) return <small>Sem cobertura adicional</small>;
   return (
-    <span className="slot-coverage">
-      {critical.map(({ id, name }) => (
-        <small className="slot-coverage-critical" key={id}>
-          Cobre crítico · {name}
-        </small>
-      ))}
-      {bonus.map(({ id, name }) => (
-        <small className="slot-coverage-bonus" key={id}>
-          Cobre bônus · {name}
-        </small>
-      ))}
-    </span>
+    <small>
+      {critical.length} críticos e {bonus.length} opcionais adicionais
+    </small>
   );
 }
 
@@ -63,25 +53,22 @@ function SlotClassPicker({ eligible, props }: { eligible: readonly SpecDefinitio
 
 function SlotPickerHeading({ index, role }: { index: number; role: CompositionSlot["role"] }): React.JSX.Element {
   return (
-    <p>
+    <h2>
       <strong>
         Vaga {index + 1} · {slotRoleLabel(role)}
       </strong>
-    </p>
+    </h2>
   );
 }
 
 /** Filtra o seletor pela vaga escolhida. Exemplo: <SlotPicker {...props} />. */
-export function SlotPicker(props: SlotPickerProps): React.JSX.Element | null {
+function SlotPickerContent(props: SlotPickerProps): React.JSX.Element | null {
   const { specs, choices, index, onClose } = props;
   const slot = choices.slots[index];
   if (!slot || slot.specId !== null) return null;
   const eligible = specs.filter((spec) => isSlotRoleCompatible(slot, spec.role));
-  function onKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-    if (event.key === "Escape") onClose(false);
-  }
   return (
-    <div className="slot-picker" onKeyDown={onKeyDown}>
+    <div className="slot-picker">
       <SlotPickerHeading index={index} role={slot.role} />
       <SlotClassPicker eligible={eligible} props={props} />
       <button type="button" autoFocus={eligible.length === 0} onClick={() => onClose(false)}>
@@ -89,4 +76,32 @@ export function SlotPicker(props: SlotPickerProps): React.JSX.Element | null {
       </button>
     </div>
   );
+}
+
+/** Mantém a escolha junto ao contexto sem rolar a raid. Exemplo: <SlotPicker {...props} />. */
+export function SlotPicker(props: SlotPickerProps): React.JSX.Element {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const role = props.choices.slots[props.index]?.role ?? "DPS";
+  useEffect(() => {
+    dialog.current?.showModal();
+  }, []);
+  return (
+    <dialog
+      ref={dialog}
+      className="slot-dialog"
+      aria-label={`Vaga ${props.index + 1} · ${slotRoleLabel(role)}`}
+      onCancel={(event) => {
+        event.preventDefault();
+        closeSlotDialog(dialog.current, props, false);
+      }}
+    >
+      <SlotPickerContent {...props} onClose={(assigned) => closeSlotDialog(dialog.current, props, assigned)} />
+    </dialog>
+  );
+}
+
+function closeSlotDialog(dialog: HTMLDialogElement | null, props: SlotPickerProps, assigned: boolean): void {
+  // Libera o restante da página antes de devolver o foco à vaga de origem.
+  dialog?.close();
+  props.onClose(assigned);
 }

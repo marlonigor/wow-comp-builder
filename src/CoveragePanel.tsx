@@ -27,7 +27,7 @@ function CoverageEntry({
       </button>
     );
   }
-  if (coverage.missingBonus.includes(id)) return <p>Bônus disponível · {name}</p>;
+  if (coverage.missingBonus.includes(id)) return <p>Opcional não coberto · {name}</p>;
   const providers = getUtilityProviders(group, id);
   return providers.length > 0 ? <CoveredUtility name={name} providers={providers} /> : null;
 }
@@ -67,16 +67,39 @@ function DungeonCoverage({ entries, props }: CoverageRowsProps): React.JSX.Eleme
   const title = useId();
   const { context } = props;
   if (context.mode !== "DUNGEON_5" || context.dungeon.id === "general") return null;
+  if (entries.length === 0)
+    return <p className="catalog-note">Esta masmorra usa o perfil geral; requisitos próprios ainda não foram verificados.</p>;
   return (
     <section className="dungeon-coverage" aria-labelledby={title}>
       <p className="eyebrow">Específicos da masmorra</p>
       <h3 id={title}>{context.dungeon.name}</h3>
-      {entries.length > 0 ? (
-        <CoverageRows entries={entries} props={props} />
-      ) : (
-        <p>O catálogo ainda usa o perfil geral para esta masmorra.</p>
-      )}
+      <CoverageRows entries={entries} props={props} />
     </section>
+  );
+}
+
+function CoverageDisclosure({ entries, props, title }: CoverageRowsProps & { title: string }): React.JSX.Element | null {
+  if (entries.length === 0) return null;
+  return (
+    <details className="coverage-disclosure">
+      <summary>
+        {title} ({entries.length})
+      </summary>
+      <CoverageRows entries={entries} props={props} />
+    </details>
+  );
+}
+
+function GeneralCoverage({ entries, props }: CoverageRowsProps): React.JSX.Element {
+  const critical = entries.filter(({ id }) => props.coverage.missingCritical.includes(id));
+  const bonus = entries.filter(({ id }) => props.coverage.missingBonus.includes(id));
+  const covered = entries.filter(({ id }) => getUtilityProviders(props.group, id).length > 0);
+  return (
+    <>
+      {critical.length > 0 ? <CoverageRows entries={critical} props={props} /> : <p>Sem pendências críticas gerais.</p>}
+      <CoverageDisclosure entries={covered} props={props} title="Cobertos" />
+      <CoverageDisclosure entries={bonus} props={props} title="Opcionais não cobertos" />
+    </>
   );
 }
 
@@ -94,7 +117,7 @@ export function CoveragePanel(props: CoveragePanelProps): React.JSX.Element {
       <p>Selecione um alerta para priorizar quem pode cobri-lo.</p>
       <DungeonCoverage entries={local} props={props} />
       <h3>Cobertura geral</h3>
-      <CoverageRows entries={general} props={props} />
+      <GeneralCoverage entries={general} props={props} />
     </section>
   );
 }

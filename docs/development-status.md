@@ -16,10 +16,21 @@ O Playwright 1.65.0 verifica a cobertura tática em Chromium sem abrir uma janel
 - Clique na busca para escolher uma classe pelo ícone e depois uma das três especializações. Os cards têm ícones de especialização, e as vagas preenchidas mostram os ícones de classe e especialização. Os JPEGs vêm do [CDN de ícones do Wowhead](https://wow.zamimg.com/images/wow/icons/large/classicon_druid.jpg) e são servidos junto com a aplicação.
 - Pressione `/`, digite `rdruid` e pressione `Enter` para adicionar Restoration Druid à primeira vaga de curador. A busca aceita classe, especialização, atalho ou utilitário. Havendo vários resultados, escolha um card ou refine o termo.
 - Passe o mouse ou use `Tab` sobre uma especialização para destacar a vaga de destino. Clique em **Vaga livre** para abrir um seletor filtrado pela função e preencher exatamente aquela posição.
-- O seletor da vaga mostra os críticos e bônus que a especialização acrescentaria à composição. Utilitários já cobertos ficam de fora. `Escape` fecha o seletor.
+- O seletor da vaga abre numa janela central, inclusive em raids de 40, com foco contido e retorno à vaga ao cancelar. Mostra um resumo dos críticos e opcionais adicionais. `Escape` fecha o seletor.
 - Em Cobertura tática, os utilitários que o grupo já oferece aparecem em verde com o rótulo **Coberto** e mostram as vagas e especializações que os fornecem. A lista acompanha as mudanças na composição.
-- Ao selecionar uma masmorra, o bloco **Específicos da masmorra** reúne seus alertas próprios e mantém os estados de cobertura e o Smart Fill. A cobertura geral fica separada. Se o catálogo ainda não tiver alertas próprios, o bloco informa que usa o perfil geral.
+- Ao selecionar uma masmorra, o bloco **Específicos da masmorra** reúne seus alertas próprios e mantém os estados de cobertura e o Smart Fill. A cobertura geral fica separada. Sem requisitos próprios verificados, uma nota discreta informa o uso do perfil geral.
+- A busca precede a composição no desktop e no celular. Sugestões compatíveis ficam recolhidas até abrir o grupo, buscar ou selecionar uma prioridade. A paleta filtra opções sem vaga livre antes de limitar os seis resultados.
+- Ao completar o grupo, a busca dá lugar a **Grupo completo**. Remover um integrante reabre a busca. O contador aparece somente na composição.
+- Pendências críticas permanecem abertas; **Cobertos** e **Opcionais não cobertos** têm contadores e expansão sob demanda. Os requisitos específicos da masmorra permanecem visíveis, inclusive quando cobertos.
 - O estado fica na URL e no armazenamento local. IDs do protótipo fictício precisam de um novo link. O botão de copiar link está pendente e as proporções de funções nas Raids são provisórias.
+
+### Revisão de UX de 07/11/2026
+
+A limpeza aplica Hick (menos escolhas simultâneas), Proximidade (seletor contextual) e Occam (remoção de contadores e explicações repetidas). Os testes de regressão de grupo completo, expansão da cobertura e diálogo móvel falharam antes da implementação. A suíte de navegador também mantém os testes de cobertura local e remoção dos fornecedores.
+
+Validação: 25 testes unitários e oito cenários de navegador, além de formatação, lint, tipos e build. O Chromium registra execução em `test-results/**/ui-coverage.json`; uma conferência das linhas mapeadas pelos source maps encontrou 98,17% em `main.tsx` e 100% em `ClassPicker.tsx`, `SlotPicker.tsx` e `CoveragePanel.tsx`. Essa medição de linhas mapeadas não equivale à cobertura de todos os caminhos. A inspeção visual usou desktop e viewport móvel de 390 × 844; o diálogo permite cancelar por Escape e devolve o foco à vaga, ou ao título da composição após adicionar.
+
+A troca de modo ainda reinicia a composição e não oferece desfazer. Preservar grupos por modo e trocar integrantes diretamente são trabalhos separados desta limpeza visual. Não houve nova dependência ou alteração do catálogo.
 
 ## Catálogo Forever 1.60.1.70862
 

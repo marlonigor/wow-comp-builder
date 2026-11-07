@@ -38,13 +38,13 @@ function ClassOptions({ specs, onClassChange, focusFirstClass }: ClassPickerProp
 function SpecOptions({ specs, className, choices, onSpecSelect, onClassChange, renderDetails }: ClassPickerProps): React.JSX.Element {
   const matching = specs.filter((spec) => spec.className === className);
   return (
-    <div className="class-options">
+    <div className="class-options spec-options">
       {matching.map((spec, index) => (
         <SpecSlotChoice key={spec.id} spec={spec} choices={choices} autoFocus={index === 0} onSelect={onSpecSelect}>
           {renderDetails?.(spec)}
         </SpecSlotChoice>
       ))}
-      <button type="button" onClick={() => onClassChange(null)}>
+      <button className="back-classes" type="button" onClick={() => onClassChange(null)}>
         Voltar às classes
       </button>
     </div>

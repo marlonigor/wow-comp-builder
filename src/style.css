@@ -11,7 +11,7 @@
 main {
   max-width: 90rem;
   margin: auto;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 h1,
 h2,
@@ -20,7 +20,7 @@ h2,
   color: #ffe2a6;
 }
 h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 750;
   line-height: 1.1;
 }
@@ -47,7 +47,7 @@ small {
   gap: 1.25rem;
   border: 1px solid #aa8951;
   border-radius: 1rem;
-  padding: clamp(1rem, 4vw, 2rem);
+  padding: 1rem;
   margin-bottom: 1.25rem;
   background: linear-gradient(120deg, #0b1425, #162c4d, #0b1425);
 }
@@ -65,22 +65,8 @@ small {
   font-size: 1.5rem;
   font-weight: 700;
 }
-.readiness {
-  display: grid;
-  gap: 0.25rem;
-  color: #c4cede;
-  min-width: 9rem;
-}
-.readiness strong {
-  color: #ffe2a6;
-  font-size: 1.4rem;
-}
 .catalog-note {
   margin-bottom: 0.75rem;
-}
-progress {
-  width: 100%;
-  accent-color: #e3b974;
 }
 .controls,
 .board {
@@ -96,6 +82,7 @@ progress {
 }
 .board {
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-areas: "palette palette" "roster coverage";
   align-items: start;
 }
 .side,
@@ -105,7 +92,13 @@ progress {
   gap: 0.5rem;
 }
 .side {
-  gap: 1rem;
+  grid-area: coverage;
+}
+.board > .panel:not(.palette-panel) {
+  grid-area: roster;
+}
+.palette-panel {
+  grid-area: palette;
 }
 .panel {
   background: #101c30;
@@ -200,16 +193,9 @@ select {
 .slot-picker > button {
   justify-self: start;
 }
-.slot-picker .slot-choice,
-.slot-coverage {
+.slot-picker .slot-choice {
   display: grid;
   gap: 0.375rem;
-}
-.slot-coverage-critical {
-  color: #ffd2d2;
-}
-.slot-coverage-bonus {
-  color: #b3eafd;
 }
 button {
   cursor: pointer;
@@ -334,5 +320,44 @@ button:hover {
 @media (max-width: 44rem) {
   .board {
     grid-template-columns: 1fr;
+    grid-template-areas: "palette" "roster" "coverage";
   }
+}
+
+.slot-dialog {
+  margin: auto;
+  width: min(42rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  padding: 1rem;
+  color: #f1f4fb;
+  background: #101c30;
+  border: 1px solid #aa8951;
+  border-radius: 0.75rem;
+}
+.slot-dialog::backdrop {
+  background: #07101ecc;
+}
+.slot-dialog .slot-picker {
+  margin-top: 0;
+}
+.spec-options {
+  grid-template-columns: 1fr;
+}
+.back-classes {
+  justify-self: start;
+  background: transparent;
+}
+.coverage-disclosure {
+  margin-top: 0.75rem;
+}
+.coverage-disclosure summary,
+.suggestions summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0.75rem 0;
+  color: #f1f4fb;
+}
+.complete-group {
+  border-color: #65bc85;
 }
