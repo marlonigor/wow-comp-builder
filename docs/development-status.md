@@ -30,7 +30,17 @@ A limpeza aplica Hick (menos escolhas simultâneas), Proximidade (seletor contex
 
 Validação: 25 testes unitários e oito cenários de navegador, além de formatação, lint, tipos e build. O Chromium registra execução em `test-results/**/ui-coverage.json`; uma conferência das linhas mapeadas pelos source maps encontrou 98,17% em `main.tsx` e 100% em `ClassPicker.tsx`, `SlotPicker.tsx` e `CoveragePanel.tsx`. Essa medição de linhas mapeadas não equivale à cobertura de todos os caminhos. A inspeção visual usou desktop e viewport móvel de 390 × 844; o diálogo permite cancelar por Escape e devolve o foco à vaga, ou ao título da composição após adicionar.
 
-A troca de modo ainda reinicia a composição e não oferece desfazer. Preservar grupos por modo e trocar integrantes diretamente são trabalhos separados desta limpeza visual. Não houve nova dependência ou alteração do catálogo.
+A revisão visual não acrescentou dependências ou alterou o catálogo. A troca direta de integrantes continua pendente.
+
+### Rascunhos por modo e limpeza
+
+Dungeon, Raid 10, Raid 20 e Raid 40 mantêm composições independentes em memória e no armazenamento local. A Dungeon mantém também a masmorra escolhida. O link aberto prevalece somente em seu modo; rascunhos antigos continuam recuperáveis. Dados armazenados são validados com o mesmo catálogo e as mesmas restrições dos links compartilhados.
+
+**Limpar composição** pede confirmação, remove somente os integrantes do modo ativo e preserva a masmorra. Cancelar ou pressionar Escape mantém o grupo e devolve o foco ao botão. A confirmação começa em Cancelar e usa os controles de 44 px existentes. A limpeza reinicia as prioridades e a busca; o resultado é anunciado e o botão fica desabilitado no grupo vazio. Isso aplica Zeigarnik (retomada do rascunho), Jakob (confirmação familiar) e Pico e Fim (resultado claro).
+
+Sem acesso ao armazenamento, alternar modos continua preservando grupos durante a sessão e o endereço continua compartilhável. Recarregar nessa condição recupera apenas o grupo no link. Não há sincronização em tempo real entre abas nem recuperação após apagar os dados do navegador.
+
+Validação desta entrega: 29 testes unitários e 11 cenários de navegador; formatação, lint, tipos e build aprovados. Os dois cenários iniciais falharam antes da implementação. A conferência de execução com source maps cobriu 100% das linhas mapeadas de `main.tsx`, `ClearComposition.tsx` e `useCompositionDrafts.ts`; os testes unitários cobrem persistência, migração, validação e limpeza sem mutar o original. A confirmação móvel foi inspecionada em 390 × 844.
 
 ## Catálogo Forever 1.60.1.70862
 

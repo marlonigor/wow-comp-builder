@@ -22,6 +22,8 @@ Abra o endereço que o terminal mostrar, normalmente `http://localhost:5173`.
 
 O catálogo usa dados de **WoW Forever 1.60.1.70862**. Os talentos cadastrados consideram as builds recomendadas nos guias. Algumas masmorras ainda usam o perfil geral.
 
-As sugestões ficam recolhidas quando não há busca ou prioridade. Ao completar o grupo, remova um integrante para liberar sua vaga e escolher outro. Mudar de modo reinicia a composição atual.
+As sugestões ficam recolhidas quando não há busca ou prioridade. Ao completar o grupo, remova um integrante para liberar sua vaga e escolher outro. Cada modo (Dungeon e Raid de 10, 20 ou 40) mantém seu próprio grupo ao alternar e recarregar a página.
+
+Use **Limpar composição** para remover todos os integrantes do modo aberto. Confirme em **Confirmar limpeza** ou escolha **Cancelar**. A masmorra selecionada e os grupos dos outros modos são preservados. O botão fica desabilitado se o grupo já estiver vazio.
 
 Consulte a [especificação](docs/documenta_o_oficial_wow_forever_comp_builder.md) e o [estado do desenvolvimento](docs/development-status.md) para ver as fontes, os testes e as limitações do catálogo.

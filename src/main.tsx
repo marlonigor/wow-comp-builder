@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { getCoverage, rankSpecs } from "./compEngine.ts";
 import type { Coverage, CoverageContext, CoverageMember } from "./compEngine.ts";
 import { assignFirstSlot, assignSlotAt, findFirstSlot, slotRoleLabel } from "./compositionSlots.ts";
 import { findSpec, foreverCatalog } from "./data/foreverCatalog.ts";
 import type { SpecDefinition } from "./data/forever-data.schema.ts";
-import { emptyComposition, groupSizes, loadComposition, saveComposition } from "./browserComposition.ts";
-import type { CompositionLink } from "./compositionLink.ts";
+import { groupSizes } from "./browserComposition.ts";
+import type { CompositionLink, GroupSize } from "./compositionLink.ts";
+import { useCompositionDrafts } from "./useCompositionDrafts.ts";
+import { ClearComposition } from "./ClearComposition.tsx";
 import { CommandBar } from "./CommandBar.tsx";
 import { searchSpecs } from "./commandSearch.ts";
 import { SpecSlotChoice } from "./SpecSlotChoice.tsx";
@@ -238,10 +240,15 @@ function BoardStatus({ status }: { status: string }): React.JSX.Element {
   );
 }
 
-function ModeSelect({ composition, onChange }: BoardProps): React.JSX.Element {
+interface ModeSelectProps {
+  composition: CompositionLink;
+  onModeChange: (size: GroupSize) => void;
+}
+
+function ModeSelect({ composition, onModeChange }: ModeSelectProps): React.JSX.Element {
   function change(value: string): void {
     const size = groupSizes.find((size) => String(size) === value);
-    if (size) onChange(emptyComposition(size));
+    if (size) onModeChange(size);
   }
   return (
     <label>
@@ -274,18 +281,19 @@ function DungeonSelect({ composition, onChange }: BoardProps): React.JSX.Element
 }
 
 function App(): React.JSX.Element {
-  const [composition, onChange] = useState(() => loadComposition(window));
-  useEffect(() => saveComposition(window, composition), [composition]);
+  const { composition, onChange, onModeChange, clear, revision, notice } = useCompositionDrafts(window);
   return (
     <main>
       <MissionHeader />
       <p className="catalog-note">Catálogo inicial · {foreverCatalog.patchVersion}. A cobertura reflete os dados já verificados.</p>
       <div className="controls">
-        <ModeSelect composition={composition} onChange={onChange} />
+        <ModeSelect composition={composition} onModeChange={onModeChange} />
         <DungeonSelect composition={composition} onChange={onChange} />
+        <ClearComposition disabled={composition.slots.every(({ specId }) => !specId)} onClear={clear} />
       </div>
       <p>O endereço da página acompanha o grupo. Copie-o para compartilhar sua composição.</p>
-      <Board key={`${composition.size}:${composition.dungeonId}`} composition={composition} onChange={onChange} />
+      <p aria-live="polite">{notice}</p>
+      <Board key={`${composition.size}:${composition.dungeonId}:${revision}`} composition={composition} onChange={onChange} />
     </main>
   );
 }
